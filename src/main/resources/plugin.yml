@@ -6,9 +6,11 @@ commands:
   fruit:
     description: Use your fruit abilities
     usage: /fruit use <1|2|3>
+    permission: fruits.use
   fruitadmin:
     description: Admin commands for fruits
     usage: /fruitadmin <give|spin|reload|setcooldown|gui>
+    permission: fruits.admin
 permissions:
   fruits.use:
     default: true
