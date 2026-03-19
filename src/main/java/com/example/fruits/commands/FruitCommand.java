@@ -25,7 +25,7 @@ public class FruitCommand implements CommandExecutor {
 
         PlayerFruitData data = FruitsPlugin.getInstance().getActivePlayers().get(player.getUniqueId());
         if (data == null || data.getFruit() == null) {
-            player.sendMessage("§cYou haven't eaten any fruit! Eat a fruit first.");
+            player.sendMessage(FruitsPlugin.getInstance().getConfig().getString("messages.no_fruit").replace('&', '§'));
             return true;
         }
 
@@ -33,33 +33,43 @@ public class FruitCommand implements CommandExecutor {
         try {
             abilityIndex = Integer.parseInt(args[1]) - 1;
         } catch (NumberFormatException e) {
-            player.sendMessage("§cInvalid ability number. Use 1, 2, or 3.");
+            player.sendMessage(FruitsPlugin.getInstance().getConfig().getString("messages.invalid_ability").replace('&', '§'));
             return true;
         }
 
         Fruit fruit = data.getFruit();
         if (abilityIndex < 0 || abilityIndex >= fruit.getAbilities().size()) {
-            player.sendMessage("§cInvalid ability number. Use 1, 2, or 3.");
+            player.sendMessage(FruitsPlugin.getInstance().getConfig().getString("messages.invalid_ability").replace('&', '§'));
             return true;
         }
 
         Ability ability = fruit.getAbilities().get(abilityIndex);
         // Check cooldown
-        if (!FruitsPlugin.getInstance().getCooldownManager().checkCooldown(player, fruit.getId() + "_" + abilityIndex, ability.getCooldown())) {
-            long remaining = FruitsPlugin.getInstance().getCooldownManager().getRemaining(player, fruit.getId() + "_" + abilityIndex);
-            player.sendMessage("§cAbility on cooldown! " + remaining + " seconds left.");
+        String cooldownKey = fruit.getId() + "_" + abilityIndex;
+        if (!FruitsPlugin.getInstance().getCooldownManager().checkCooldown(player, cooldownKey, ability.getCooldown())) {
+            long remaining = FruitsPlugin.getInstance().getCooldownManager().getRemaining(player, cooldownKey);
+            String msg = FruitsPlugin.getInstance().getConfig().getString("messages.on_cooldown")
+                    .replace("{seconds}", String.valueOf(remaining))
+                    .replace('&', '§');
+            player.sendMessage(msg);
             return true;
         }
 
         // Execute ability
         ability.getExecutor().execute(player);
         // Set cooldown
-        FruitsPlugin.getInstance().getCooldownManager().setCooldown(player, fruit.getId() + "_" + abilityIndex);
+        FruitsPlugin.getInstance().getCooldownManager().setCooldown(player, cooldownKey);
 
         // Increment used abilities count
         data.incrementUsed();
+        String abilityUsedMsg = FruitsPlugin.getInstance().getConfig().getString("messages.ability_used")
+                .replace("{ability}", ability.getName())
+                .replace("{used}", String.valueOf(data.getUsedAbilities()))
+                .replace('&', '§');
+        player.sendMessage(abilityUsedMsg);
+
         if (data.getFruit() == null) {
-            player.sendMessage("§aYou have used all three abilities! Your fruit has been returned to your inventory.");
+            player.sendMessage(FruitsPlugin.getInstance().getConfig().getString("messages.fruit_returned").replace('&', '§'));
         }
 
         return true;
