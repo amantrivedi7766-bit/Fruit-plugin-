@@ -1,8 +1,6 @@
 package com.example.fruits.models;
 
 import org.bukkit.entity.Player;
-import java.util.HashMap;
-import java.util.Map;
 
 public class PlayerFruitData {
     private final Player player;
@@ -20,7 +18,6 @@ public class PlayerFruitData {
         if (usedAbilities >= 3) {
             // Give back fruit item
             player.getInventory().addItem(fruit.createItem());
-            // Clear data
             fruit = null;
             usedAbilities = 0;
         }
@@ -28,4 +25,5 @@ public class PlayerFruitData {
 
     public Fruit getFruit() { return fruit; }
     public int getUsedAbilities() { return usedAbilities; }
+    public Player getPlayer() { return player; }
 }
