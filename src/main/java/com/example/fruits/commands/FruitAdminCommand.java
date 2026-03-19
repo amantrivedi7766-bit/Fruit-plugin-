@@ -4,7 +4,9 @@ import com.example.fruits.FruitsPlugin;
 import com.example.fruits.gui.AdminGUI;
 import com.example.fruits.models.Fruit;
 import org.bukkit.Bukkit;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -72,7 +74,6 @@ public class FruitAdminCommand implements CommandExecutor {
                 break;
 
             case "setcooldown":
-                // Implementation for changing cooldowns (requires config)
                 sender.sendMessage("§cNot implemented yet.");
                 break;
 
