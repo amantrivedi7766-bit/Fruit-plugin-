@@ -17,7 +17,7 @@ public class PlayerEatListener implements Listener {
         String fruitId = Fruit.getFruitId(item);
         if (fruitId == null) return;
 
-        event.setCancelled(true); // prevent normal eating
+        event.setCancelled(true);
         Player player = event.getPlayer();
         Fruit fruit = FruitsPlugin.getInstance().getFruitRegistry().getFruit(fruitId);
         if (fruit == null) return;
@@ -29,6 +29,9 @@ public class PlayerEatListener implements Listener {
         PlayerFruitData data = new PlayerFruitData(player, fruit);
         FruitsPlugin.getInstance().getActivePlayers().put(player.getUniqueId(), data);
 
-        player.sendMessage("§aYou ate the " + fruit.getDisplayName() + "! Use /fruit use <1|2|3> to activate abilities.");
+        String msg = FruitsPlugin.getInstance().getConfig().getString("messages.fruit_eaten")
+                .replace("{fruit}", fruit.getDisplayName())
+                .replace('&', '§');
+        player.sendMessage(msg);
     }
 }
