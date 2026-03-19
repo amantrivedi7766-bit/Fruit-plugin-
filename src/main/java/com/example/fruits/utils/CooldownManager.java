@@ -1,0 +1,1 @@
+package com.example.fruits.utils; public class CooldownManager {}
