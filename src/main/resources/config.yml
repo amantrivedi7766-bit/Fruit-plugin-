@@ -1,1 +1,17 @@
-# Default config for FruitsPlugin
+# Default config for Fruit# Fruit cooldowns (in seconds) – can be overridden per ability
+cooldowns:
+  default: 15
+  godfruit_one_shot: 120
+  godfruit_gods_wrath: 60
+  godfruit_divine_shield: 90
+
+# Messages (use & for color codes)
+messages:
+  no_fruit: "&cYou haven't eaten any fruit! Eat a fruit first."
+  on_cooldown: "&cAbility on cooldown! &e{seconds} &cseconds left."
+  fruit_eaten: "&aYou ate the {fruit}! Use &e/fruit use <1|2|3> &ato activate abilities."
+  ability_used: "&aUsed {ability}! ({used}/3)"
+  fruit_returned: "&aYou have used all three abilities! Your fruit has been returned to your inventory."
+  invalid_ability: "&cInvalid ability number. Use 1, 2, or 3."
+  one_shot_no_levels: "&cYou need 30 XP levels to use One Shot!"
+  one_shot_not_diamond: "&cTarget is not wearing full diamond armor!"sPlugin
