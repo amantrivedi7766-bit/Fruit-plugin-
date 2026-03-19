@@ -1,11 +1,11 @@
 package com.example.fruits.models;
 
+import com.example.fruits.FruitsPlugin;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import com.example.fruits.FruitsPlugin;
-import org.bukkit.NamespacedKey;
 
 import java.util.Arrays;
 import java.util.List;
@@ -31,7 +31,6 @@ public class Fruit {
         for (int i = 0; i < abilities.size(); i++) {
             meta.getLore().add("§7 " + (i+1) + ". " + abilities.get(i).getName());
         }
-        // Store fruit ID in persistent data
         NamespacedKey key = new NamespacedKey(FruitsPlugin.getInstance(), "fruit_id");
         meta.getPersistentDataContainer().set(key, PersistentDataType.STRING, id);
         item.setItemMeta(meta);
