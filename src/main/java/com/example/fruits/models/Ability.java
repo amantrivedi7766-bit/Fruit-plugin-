@@ -4,7 +4,7 @@ import org.bukkit.entity.Player;
 
 public class Ability {
     private final String name;
-    private final int cooldown; // seconds
+    private final int cooldown;
     private final AbilityExecutor executor;
 
     public Ability(String name, int cooldown, AbilityExecutor executor) {
