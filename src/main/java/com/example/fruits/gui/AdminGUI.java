@@ -17,8 +17,8 @@ public class AdminGUI {
         Inventory inv = Bukkit.createInventory(new GUIHolder(), 9, "§8Fruit Admin");
         
         int slot = 0;
-        for(Fruit f : FruitsPlugin.getInstance().getFruitRegistry().getAllFruits()) {
-            ItemStack item = f.createItem();
+        for(Fruit fruit : FruitsPlugin.getInstance().getFruitRegistry().getAllFruits()) {
+            ItemStack item = fruit.createItem();
             ItemMeta meta = item.getItemMeta();
             meta.setLore(Arrays.asList("§7Click to give"));
             item.setItemMeta(meta);
