@@ -11,12 +11,15 @@ public class AdminGUIListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        if (!(event.getInventory().getHolder() instanceof AdminGUI.Holder)) return;
+        // FIXED: GUIHolder class ka reference diya
+        if (!(event.getInventory().getHolder() instanceof AdminGUI.GUIHolder)) return;
+        
         event.setCancelled(true);
         if (event.getCurrentItem() == null) return;
 
         Player player = (Player) event.getWhoClicked();
         ItemStack clicked = event.getCurrentItem();
+        
         if (event.getSlot() == 8) {
             // Spin: give random fruit
             player.performCommand("fruitadmin spin " + player.getName());
