@@ -24,4 +24,48 @@ public class FruitCommand implements CommandExecutor {
         }
         
         PlayerFruitData data = FruitsPlugin.getInstance().getActivePlayers().get(p.getUniqueId());
-        if(data == null || data.getF
+        if(data == null || data.getFruit() == null) {
+            p.sendMessage("§c❌ Eat a fruit first!");
+            return true;
+        }
+        
+        int index;
+        try {
+            index = Integer.parseInt(args[1]) - 1;
+        } catch(Exception e) {
+            p.sendMessage("§c❌ Use 1, 2, or 3");
+            return true;
+        }
+        
+        Fruit fruit = data.getFruit();
+        if(index < 0 || index >= fruit.getAbilities().size()) {
+            p.sendMessage("§c❌ Invalid ability number");
+            return true;
+        }
+        
+        Ability ability = fruit.getAbilities().get(index);
+        String cooldownKey = fruit.getId() + "_" + index;
+        
+        if(!FruitsPlugin.getInstance().getCooldownManager().checkCooldown(p, cooldownKey)) return true;
+        
+        // Execute ability
+        ability.getExecutor().execute(p);
+        FruitsPlugin.getInstance().getCooldownManager().setCooldown(p, cooldownKey, ability.getCooldown(), ability.getName());
+        
+        data.incrementUsed();
+        
+        // Show ability used message
+        p.sendMessage("§a⚡ Used " + ability.getName() + "! (" + data.getUsedAbilities() + "/3)");
+        
+        // Show remaining abilities in action bar
+        int remaining = 3 - data.getUsedAbilities();
+        p.spigot().sendMessage(ChatMessageType.ACTION_BAR, 
+            TextComponent.fromLegacyText("§a✓ Ability used! §e" + remaining + " §7uses remaining"));
+        
+        if(data.getFruit() == null) {
+            p.sendMessage("§a🔄 Fruit returned to inventory! Eat again to reuse abilities!");
+        }
+        
+        return true;
+    }
+}
