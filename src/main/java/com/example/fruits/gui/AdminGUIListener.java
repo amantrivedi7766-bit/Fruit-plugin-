@@ -12,10 +12,15 @@ public class AdminGUIListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent event) {
         // Using the correct public GUIHolder class
-        if (!(event.getInventory().getHolder() instanceof AdminGUI.GUIHolder)) return;
+        if (!(event.getInventory().getHolder() instanceof AdminGUI.GUIHolder)) {
+            return;
+        }
         
         event.setCancelled(true);
-        if (event.getCurrentItem() == null) return;
+        
+        if (event.getCurrentItem() == null) {
+            return;
+        }
 
         Player player = (Player) event.getWhoClicked();
         ItemStack clicked = event.getCurrentItem();
