@@ -6,14 +6,22 @@ on:
   pull_request:
     branches: [ "main", "master" ]
   workflow_dispatch:
+    inputs:
+      debug_enabled:
+        description: 'Run with debug logging'
+        type: boolean
+        required: false
+        default: false
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: ☕ Set up JDK 21
         uses: actions/setup-java@v4
@@ -22,16 +30,54 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: 🔍 Verify Java and Maven
+      - name: 🔍 Verify Java and Maven versions
         run: |
+          echo "Java version:"
           java -version
+          echo ""
+          echo "Maven version:"
           mvn -version
+          echo ""
+          echo "Current directory:"
+          pwd
+          echo ""
+          echo "Directory structure:"
+          ls -la
 
-      - name: 🛠️ Build with Maven
-        run: mvn -B clean package --file pom.xml
+      - name: 📦 Cache Maven dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: 🔧 Debug Maven dependencies (if enabled)
+        if: ${{ github.event.inputs.debug_enabled == 'true' }}
+        run: |
+          echo "=== POM.XML CONTENT ==="
+          cat pom.xml
+          echo ""
+          echo "=== MAVEN DEPENDENCY TREE ==="
+          mvn dependency:tree
+
+      - name: 🛠️ Clean and compile
+        run: mvn -B clean compile --file pom.xml
+
+      - name: 🧪 Run tests (if any)
+        run: mvn -B test --file pom.xml
+        continue-on-error: true
+
+      - name: 📦 Package plugin
+        run: mvn -B package --file pom.xml
 
       - name: 📂 List target directory
-        run: ls -la target/
+        run: |
+          echo "=== TARGET DIRECTORY CONTENTS ==="
+          ls -la target/
+          echo ""
+          echo "=== JAR FILES ==="
+          find target -name "*.jar" -type f
 
       - name: 📤 Upload build artifact
         uses: actions/upload-artifact@v4
@@ -39,3 +85,15 @@ jobs:
           name: FruitsPlugin-${{ github.sha }}
           path: target/*.jar
           if-no-files-found: error
+          retention-days: 30
+
+      - name: ✅ Build success notification
+        if: success()
+        run: echo "✅ Build completed successfully!"
+
+      - name: ❌ Build failure notification
+        if: failure()
+        run: |
+          echo "❌ Build failed!"
+          echo "Check the logs above for errors."
+          exit 1
