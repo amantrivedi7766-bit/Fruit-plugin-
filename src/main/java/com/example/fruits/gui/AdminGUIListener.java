@@ -11,7 +11,7 @@ public class AdminGUIListener implements Listener {
 
     @EventHandler
     public void onClick(InventoryClickEvent event) {
-        // FIXED: GUIHolder class ka reference diya
+        // Using the correct public GUIHolder class
         if (!(event.getInventory().getHolder() instanceof AdminGUI.GUIHolder)) return;
         
         event.setCancelled(true);
