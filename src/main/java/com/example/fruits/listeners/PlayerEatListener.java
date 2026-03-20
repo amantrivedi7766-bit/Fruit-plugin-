@@ -3,6 +3,8 @@ package com.example.fruits.listeners;
 import com.example.fruits.FruitsPlugin;
 import com.example.fruits.models.Fruit;
 import com.example.fruits.models.PlayerFruitData;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,26 +14,33 @@ import org.bukkit.inventory.ItemStack;
 public class PlayerEatListener implements Listener {
 
     @EventHandler
-    public void onConsume(PlayerItemConsumeEvent event) {
+    public void onEat(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
         String fruitId = Fruit.getFruitId(item);
-        if (fruitId == null) return;
+        if(fruitId == null) return;
 
         event.setCancelled(true);
         Player player = event.getPlayer();
         Fruit fruit = FruitsPlugin.getInstance().getFruitRegistry().getFruit(fruitId);
-        if (fruit == null) return;
+        
+        if(fruit == null) return;
 
         // Remove one fruit from hand
         item.setAmount(item.getAmount() - 1);
-
-        // Set player's active fruit data
+        
+        // Store player's active fruit
         PlayerFruitData data = new PlayerFruitData(player, fruit);
         FruitsPlugin.getInstance().getActivePlayers().put(player.getUniqueId(), data);
 
-        String msg = FruitsPlugin.getInstance().getConfig().getString("messages.fruit_eaten")
-                .replace("{fruit}", fruit.getDisplayName())
-                .replace('&', '§');
-        player.sendMessage(msg);
+        // Show abilities in action bar
+        String abilities = fruit.getAbilities().get(0).getName() + " | " + 
+                          fruit.getAbilities().get(1).getName() + " | " + 
+                          fruit.getAbilities().get(2).getName();
+        
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, 
+            TextComponent.fromLegacyText("§a🍎 " + fruit.getDisplayName() + " §7| Abilities: §e" + abilities));
+        
+        player.sendMessage("§a✅ You ate " + fruit.getDisplayName() + "!");
+        player.sendMessage("§eAbilities: /fruit use 1 | 2 | 3");
     }
 }
