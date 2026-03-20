@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 public class PlayerFruitData {
     private final Player player;
     private Fruit fruit;
-    private int usedAbilities; // 0..3
+    private int usedAbilities;
 
     public PlayerFruitData(Player player, Fruit fruit) {
         this.player = player;
@@ -15,8 +15,7 @@ public class PlayerFruitData {
 
     public void incrementUsed() {
         usedAbilities++;
-        if (usedAbilities >= 3) {
-            // Give back fruit item
+        if(usedAbilities >= 3) {
             player.getInventory().addItem(fruit.createItem());
             fruit = null;
             usedAbilities = 0;
@@ -25,5 +24,4 @@ public class PlayerFruitData {
 
     public Fruit getFruit() { return fruit; }
     public int getUsedAbilities() { return usedAbilities; }
-    public Player getPlayer() { return player; }
 }
