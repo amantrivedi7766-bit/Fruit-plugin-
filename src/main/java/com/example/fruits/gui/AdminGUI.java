@@ -13,8 +13,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Arrays;
 
 public class AdminGUI {
+    
     public static void open(Player player) {
-        Inventory inv = Bukkit.createInventory(new Holder(), 9, "§8Fruit Admin Panel");
+        Inventory inv = Bukkit.createInventory(new GUIHolder(), 9, "§8Fruit Admin Panel");
         int slot = 0;
         for (Fruit fruit : FruitsPlugin.getInstance().getFruitRegistry().getAllFruits()) {
             ItemStack item = fruit.createItem();
@@ -33,7 +34,8 @@ public class AdminGUI {
         player.openInventory(inv);
     }
 
-    private static class Holder implements InventoryHolder {
+    // FIXED: Public class banaya
+    public static class GUIHolder implements InventoryHolder {
         @Override
         public Inventory getInventory() { return null; }
     }
