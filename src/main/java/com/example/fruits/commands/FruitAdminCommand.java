@@ -30,6 +30,7 @@ public class FruitAdminCommand implements CommandExecutor {
             case "give":
                 if (args.length < 3) {
                     sender.sendMessage("§cUsage: /fruitadmin give <player> <fruit> [amount]");
+                    sender.sendMessage("§cFruits: crimson_star, moon_crescent, blood_gem, void_cluster, solar_orb, thorned_crown, ruby_heart, jade_melon, drakes_tear, primordial_essence");
                     return true;
                 }
                 Player target = Bukkit.getPlayer(args[1]);
@@ -39,7 +40,7 @@ public class FruitAdminCommand implements CommandExecutor {
                 }
                 Fruit fruit = FruitsPlugin.getInstance().getFruitRegistry().getFruit(args[2]);
                 if (fruit == null) {
-                    sender.sendMessage("§cFruit not found.");
+                    sender.sendMessage("§cFruit not found. Use: crimson_star, moon_crescent, blood_gem, void_cluster, solar_orb, thorned_crown, ruby_heart, jade_melon, drakes_tear, primordial_essence");
                     return true;
                 }
                 int amount = 1;
