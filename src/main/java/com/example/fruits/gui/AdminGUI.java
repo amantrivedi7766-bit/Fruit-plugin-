@@ -37,6 +37,8 @@ public class AdminGUI {
     // PUBLIC class - IMPORTANT!
     public static class GUIHolder implements InventoryHolder {
         @Override
-        public Inventory getInventory() { return null; }
+        public Inventory getInventory() { 
+            return null; 
+        }
     }
 }
