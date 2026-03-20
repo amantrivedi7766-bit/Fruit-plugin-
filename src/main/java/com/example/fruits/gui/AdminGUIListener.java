@@ -9,22 +9,22 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 public class AdminGUIListener implements Listener {
 
     @EventHandler
-    public void onClick(InventoryClickEvent e) {
-        if(!(e.getInventory().getHolder() instanceof AdminGUI.GUIHolder)) return;
+    public void onClick(InventoryClickEvent event) {
+        if(!(event.getInventory().getHolder() instanceof AdminGUI.GUIHolder)) return;
         
-        e.setCancelled(true);
-        if(e.getCurrentItem() == null) return;
+        event.setCancelled(true);
+        if(event.getCurrentItem() == null) return;
         
-        Player p = (Player) e.getWhoClicked();
+        Player player = (Player) event.getWhoClicked();
         
-        if(e.getSlot() == 8) {
-            p.performCommand("fruitadmin spin " + p.getName());
+        if(event.getSlot() == 8) {
+            player.performCommand("fruitadmin spin " + player.getName());
         } else {
-            String fruitId = Fruit.getFruitId(e.getCurrentItem());
+            String fruitId = Fruit.getFruitId(event.getCurrentItem());
             if(fruitId != null) {
-                p.performCommand("fruitadmin give " + p.getName() + " " + fruitId);
+                player.performCommand("fruitadmin give " + player.getName() + " " + fruitId);
             }
         }
-        p.closeInventory();
+        player.closeInventory();
     }
 }
