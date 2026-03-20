@@ -34,7 +34,7 @@ public class AdminGUI {
         player.openInventory(inv);
     }
 
-    // FIXED: Public class banaya
+    // PUBLIC class - IMPORTANT!
     public static class GUIHolder implements InventoryHolder {
         @Override
         public Inventory getInventory() { return null; }
