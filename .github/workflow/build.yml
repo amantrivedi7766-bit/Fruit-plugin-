@@ -1,17 +1,14 @@
-name: Build and Test FruitsPlugin
+name: Build FruitsPlugin
 
 on:
   push:
-    branches: [ "main", "master", "develop" ]
-  pull_request:
     branches: [ "main", "master" ]
   workflow_dispatch:
     inputs:
       clear_cache:
-        description: 'Clear Maven cache'
+        description: 'Clear all caches'
         type: boolean
-        required: false
-        default: false
+        default: true
 
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
@@ -21,52 +18,43 @@ jobs:
     runs-on: ubuntu-latest
     
     steps:
-      - name: 📥 Checkout repository
+      - name: 📥 Checkout
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
-      - name: ☕ Set up JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: maven
-
-      - name: 🔍 Verify files
-        run: |
-          echo "=== CHECKING FILES ==="
-          echo "FruitRegistry.java content:"
-          cat src/main/java/com/example/fruits/registry/FruitRegistry.java | grep -A 2 "moon_crescent" || echo "File not found or different"
-          echo ""
-          echo "AdminGUI.java content:"
-          cat src/main/java/com/example/fruits/gui/AdminGUI.java | grep -A 5 "GUIHolder" || echo "File not found or different"
-
-      - name: 🗑️ Clear Maven cache (if requested)
+      - name: 🗑️ CLEAR ALL CACHES
         if: ${{ github.event.inputs.clear_cache == 'true' }}
         run: |
           rm -rf ~/.m2/repository/com/example
           rm -rf ~/.m2/repository/io/papermc
+          rm -rf ~/.m2/repository/org/bukkit
+          echo "✅ Cache cleared!"
 
-      - name: 📦 Cache Maven dependencies
-        uses: actions/cache@v4
+      - name: ☕ Setup JDK 21
+        uses: actions/setup-java@v4
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-maven-
+          java-version: '21'
+          distribution: 'temurin'
 
-      - name: 🛠️ Clean compile
+      - name: 🔍 Verify Files
         run: |
-          mvn -B clean compile --file pom.xml
-        continue-on-error: false
+          echo "=== CHECKING FOR BANANA/ORANGE ==="
+          if grep -q "BANANA" src/main/java/com/example/fruits/registry/FruitRegistry.java; then
+            echo "❌ ERROR: BANANA found!"
+            exit 1
+          fi
+          echo "✅ No BANANA found"
+          
+          if grep -q "Material.ORANGE" src/main/java/com/example/fruits/registry/FruitRegistry.java; then
+            echo "❌ ERROR: ORANGE found!"
+            exit 1
+          fi
+          echo "✅ No ORANGE found"
 
-      - name: 📦 Package plugin
-        run: mvn -B package --file pom.xml
+      - name: 📦 Build
+        run: mvn -B clean package
 
-      - name: 📤 Upload artifact
+      - name: 📤 Upload
         uses: actions/upload-artifact@v4
         with:
-          name: FruitsPlugin-${{ github.sha }}
+          name: FruitsPlugin
           path: target/*.jar
-          if-no-files-found: error
