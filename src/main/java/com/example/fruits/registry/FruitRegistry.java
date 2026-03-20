@@ -21,7 +21,7 @@ public class FruitRegistry {
             new Ability("Nature's Wrath", 30, p -> p.sendMessage("§aCrimson Star: Nature's Wrath used!"))
         )));
 
-        // 2. Moon Crescent - GOLDEN_CARROT (FIXED: BANANA removed)
+        // 2. Moon Crescent - GOLDEN_CARROT (NOT BANANA!)
         fruits.put("moon_crescent", new Fruit("moon_crescent", "Moon Crescent", Material.GOLDEN_CARROT, Arrays.asList(
             new Ability("Lunar Slip", 15, p -> p.sendMessage("§aMoon Crescent: Lunar Slip used!")),
             new Ability("Crescent Throw", 20, p -> p.sendMessage("§aMoon Crescent: Crescent Throw used!")),
@@ -42,7 +42,7 @@ public class FruitRegistry {
             new Ability("Abyssal Whip", 25, p -> p.sendMessage("§aVoid Cluster: Abyssal Whip used!"))
         )));
 
-        // 5. Solar Orb - ORANGE_DYE (FIXED: ORANGE removed)
+        // 5. Solar Orb - ORANGE_DYE (NOT ORANGE!)
         fruits.put("solar_orb", new Fruit("solar_orb", "Solar Orb", Material.ORANGE_DYE, Arrays.asList(
             new Ability("Solar Slice", 15, p -> p.sendMessage("§aSolar Orb: Solar Slice used!")),
             new Ability("Radiant Spray", 20, p -> p.sendMessage("§aSolar Orb: Radiant Spray used!")),
@@ -84,7 +84,7 @@ public class FruitRegistry {
                     p.sendMessage("§cYou need 30 XP levels for One Shot!");
                     return;
                 }
-                p.sendMessage("§aPrimordial Essence: One Shot used! (placeholder)");
+                p.sendMessage("§aPrimordial Essence: One Shot used!");
                 p.setLevel(p.getLevel() - 30);
             }),
             new Ability("God's Wrath", 60, p -> p.sendMessage("§aPrimordial Essence: God's Wrath used!")),
@@ -92,6 +92,11 @@ public class FruitRegistry {
         )));
     }
 
-    public Fruit getFruit(String id) { return fruits.get(id); }
-    public Collection<Fruit> getAllFruits() { return fruits.values(); }
+    public Fruit getFruit(String id) { 
+        return fruits.get(id); 
+    }
+    
+    public Collection<Fruit> getAllFruits() { 
+        return fruits.values(); 
+    }
 }
