@@ -21,8 +21,8 @@ public class FruitRegistry {
             new Ability("Tree Slam", 30, p -> p.sendMessage("§aCrimson Star Ability 3 used (placeholder)"))
         )));
 
-        // 2. Moon Crescent (internal id: banana)
-        fruits.put("banana", new Fruit("banana", "Moon Crescent", Material.BANANA, Arrays.asList(
+        // 2. Moon Crescent (internal id: banana) - FIXED: GOLDEN_CARROT instead of BANANA
+        fruits.put("banana", new Fruit("banana", "Moon Crescent", Material.GOLDEN_CARROT, Arrays.asList(
             new Ability("Banana Peel", 15, p -> p.sendMessage("§aMoon Crescent Ability 1 used")),
             new Ability("Banana Throw", 20, p -> p.sendMessage("§aMoon Crescent Ability 2 used")),
             new Ability("Monkey Frenzy", 30, p -> p.sendMessage("§aMoon Crescent Ability 3 used"))
@@ -42,8 +42,8 @@ public class FruitRegistry {
             new Ability("Vine Whip", 25, p -> p.sendMessage("§aVoid Cluster Ability 3 used"))
         )));
 
-        // 5. Solar Orb (internal id: orange)
-        fruits.put("orange", new Fruit("orange", "Solar Orb", Material.ORANGE, Arrays.asList(
+        // 5. Solar Orb (internal id: orange) - FIXED: ORANGE_DYE instead of ORANGE
+        fruits.put("orange", new Fruit("orange", "Solar Orb", Material.ORANGE_DYE, Arrays.asList(
             new Ability("Orange Slice", 15, p -> p.sendMessage("§aSolar Orb Ability 1 used")),
             new Ability("Acid Spray", 20, p -> p.sendMessage("§aSolar Orb Ability 2 used")),
             new Ability("Sun Burst", 30, p -> p.sendMessage("§aSolar Orb Ability 3 used"))
