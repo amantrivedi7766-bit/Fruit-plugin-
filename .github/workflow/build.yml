@@ -7,14 +7,14 @@ on:
     branches: [ "main", "master" ]
   workflow_dispatch:
     inputs:
-      debug_enabled:
-        description: 'Run with debug logging'
+      clear_cache:
+        description: 'Clear Maven cache'
         type: boolean
         required: false
         default: false
 
 env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true  # Force Node.js 24 now
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
@@ -33,70 +33,40 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: 🔍 Verify Java and Maven versions
+      - name: 🔍 Verify files
         run: |
-          echo "Java version:"
-          java -version
+          echo "=== CHECKING FILES ==="
+          echo "FruitRegistry.java content:"
+          cat src/main/java/com/example/fruits/registry/FruitRegistry.java | grep -A 2 "moon_crescent" || echo "File not found or different"
           echo ""
-          echo "Maven version:"
-          mvn -version
-          echo ""
-          echo "Current directory:"
-          pwd
-          echo ""
-          echo "Directory structure:"
-          ls -la
+          echo "AdminGUI.java content:"
+          cat src/main/java/com/example/fruits/gui/AdminGUI.java | grep -A 5 "GUIHolder" || echo "File not found or different"
+
+      - name: 🗑️ Clear Maven cache (if requested)
+        if: ${{ github.event.inputs.clear_cache == 'true' }}
+        run: |
+          rm -rf ~/.m2/repository/com/example
+          rm -rf ~/.m2/repository/io/papermc
 
       - name: 📦 Cache Maven dependencies
         uses: actions/cache@v4
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}-${{ github.run_id }}
           restore-keys: |
             ${{ runner.os }}-maven-
 
-      - name: 🔧 Debug Maven dependencies (if enabled)
-        if: ${{ github.event.inputs.debug_enabled == 'true' }}
+      - name: 🛠️ Clean compile
         run: |
-          echo "=== POM.XML CONTENT ==="
-          cat pom.xml
-          echo ""
-          echo "=== MAVEN DEPENDENCY TREE ==="
-          mvn dependency:tree
-
-      - name: 🛠️ Clean and compile
-        run: mvn -B clean compile --file pom.xml
-
-      - name: 🧪 Run tests (if any)
-        run: mvn -B test --file pom.xml
-        continue-on-error: true
+          mvn -B clean compile --file pom.xml
+        continue-on-error: false
 
       - name: 📦 Package plugin
         run: mvn -B package --file pom.xml
 
-      - name: 📂 List target directory
-        run: |
-          echo "=== TARGET DIRECTORY CONTENTS ==="
-          ls -la target/
-          echo ""
-          echo "=== JAR FILES ==="
-          find target -name "*.jar" -type f
-
-      - name: 📤 Upload build artifact
+      - name: 📤 Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: FruitsPlugin-${{ github.sha }}
           path: target/*.jar
           if-no-files-found: error
-          retention-days: 30
-
-      - name: ✅ Build success notification
-        if: success()
-        run: echo "✅ Build completed successfully!"
-
-      - name: ❌ Build failure notification
-        if: failure()
-        run: |
-          echo "❌ Build failed!"
-          echo "Check the logs above for errors."
-          exit 1
