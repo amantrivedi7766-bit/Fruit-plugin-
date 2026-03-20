@@ -1,7 +1,10 @@
 name: FruitsPlugin
 version: 1.0.0
 main: com.example.fruits.FruitsPlugin
-api-version: 1.21
+api-version: "1.21"
+author: YourName
+description: 10 Magical Fruits with unique abilities
+
 commands:
   fruit:
     description: Use your fruit abilities
@@ -11,8 +14,11 @@ commands:
     description: Admin commands for fruits
     usage: /fruitadmin <give|spin|reload|setcooldown|gui>
     permission: fruits.admin
+
 permissions:
   fruits.use:
+    description: Allows using fruit abilities
     default: true
   fruits.admin:
+    description: Allows admin commands for fruits
     default: op
