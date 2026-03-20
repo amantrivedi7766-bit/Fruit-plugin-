@@ -9,7 +9,7 @@ commands:
     usage: /fruit use <1|2|3>
   fruitadmin:
     description: Admin commands
-    usage: /fruitadmin <give|spin|gui>
+    usage: /fruitadmin <give|spin|spinall|gui|reload>
 
 permissions:
   fruits.admin:
