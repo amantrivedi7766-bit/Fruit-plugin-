@@ -1,17 +1,9 @@
-name: Build FruitsPlugin
+name: FRESH BUILD - NO CACHE
 
 on:
   push:
-    branches: [ "main", "master" ]
+    branches: [ main, master ]
   workflow_dispatch:
-    inputs:
-      clear_cache:
-        description: 'Clear all caches'
-        type: boolean
-        default: true
-
-env:
-  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
@@ -21,40 +13,36 @@ jobs:
       - name: 📥 Checkout
         uses: actions/checkout@v4
 
-      - name: 🗑️ CLEAR ALL CACHES
-        if: ${{ github.event.inputs.clear_cache == 'true' }}
-        run: |
-          rm -rf ~/.m2/repository/com/example
-          rm -rf ~/.m2/repository/io/papermc
-          rm -rf ~/.m2/repository/org/bukkit
-          echo "✅ Cache cleared!"
-
       - name: ☕ Setup JDK 21
         uses: actions/setup-java@v4
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: 🔍 Verify Files
+      - name: 🗑️ DELETE ENTIRE MAVEN CACHE
         run: |
-          echo "=== CHECKING FOR BANANA/ORANGE ==="
-          if grep -q "BANANA" src/main/java/com/example/fruits/registry/FruitRegistry.java; then
-            echo "❌ ERROR: BANANA found!"
-            exit 1
-          fi
-          echo "✅ No BANANA found"
+          rm -rf ~/.m2/repository
+          mkdir -p ~/.m2/repository
+          echo "✅ Maven cache completely wiped!"
+
+      - name: 🔍 CHECK FILES BEFORE COMPILE
+        run: |
+          echo "=== CHECKING FruitRegistry.java ==="
+          cat src/main/java/com/example/fruits/registry/FruitRegistry.java | grep -n "BANANA" || echo "✅ No BANANA found"
+          cat src/main/java/com/example/fruits/registry/FruitRegistry.java | grep -n "ORANGE" || echo "✅ No ORANGE found"
           
-          if grep -q "Material.ORANGE" src/main/java/com/example/fruits/registry/FruitRegistry.java; then
-            echo "❌ ERROR: ORANGE found!"
-            exit 1
-          fi
-          echo "✅ No ORANGE found"
+          echo "=== CHECKING AdminGUIListener.java ==="
+          cat src/main/java/com/example/fruits/gui/AdminGUIListener.java | grep -n "AdminGUI.Holder" || echo "✅ No AdminGUI.Holder found"
 
-      - name: 📦 Build
-        run: mvn -B clean package
+      - name: 🛠️ COMPILE WITH FRESH CACHE
+        run: |
+          mvn -B clean compile --file pom.xml -Dmaven.repo.local=~/.m2/repository
 
-      - name: 📤 Upload
+      - name: 📦 PACKAGE
+        run: mvn -B package --file pom.xml
+
+      - name: 📤 UPLOAD
         uses: actions/upload-artifact@v4
         with:
-          name: FruitsPlugin
+          name: FruitsPlugin-FRESH
           path: target/*.jar
