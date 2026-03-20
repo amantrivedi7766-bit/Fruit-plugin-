@@ -5,36 +5,26 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class AdminGUIListener implements Listener {
 
     @EventHandler
-    public void onClick(InventoryClickEvent event) {
-        // Using the correct public GUIHolder class
-        if (!(event.getInventory().getHolder() instanceof AdminGUI.GUIHolder)) {
-            return;
-        }
+    public void onClick(InventoryClickEvent e) {
+        if(!(e.getInventory().getHolder() instanceof AdminGUI.GUIHolder)) return;
         
-        event.setCancelled(true);
+        e.setCancelled(true);
+        if(e.getCurrentItem() == null) return;
         
-        if (event.getCurrentItem() == null) {
-            return;
-        }
-
-        Player player = (Player) event.getWhoClicked();
-        ItemStack clicked = event.getCurrentItem();
+        Player p = (Player) e.getWhoClicked();
         
-        if (event.getSlot() == 8) {
-            // Spin: give random fruit
-            player.performCommand("fruitadmin spin " + player.getName());
+        if(e.getSlot() == 8) {
+            p.performCommand("fruitadmin spin " + p.getName());
         } else {
-            // Give specific fruit
-            String fruitId = Fruit.getFruitId(clicked);
-            if (fruitId != null) {
-                player.performCommand("fruitadmin give " + player.getName() + " " + fruitId);
+            String fruitId = Fruit.getFruitId(e.getCurrentItem());
+            if(fruitId != null) {
+                p.performCommand("fruitadmin give " + p.getName() + " " + fruitId);
             }
         }
-        player.closeInventory();
+        p.closeInventory();
     }
 }
